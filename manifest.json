@@ -1,0 +1,24 @@
+{
+    "name": "Vent's Manaba Extention.",
+    "version": "0.0.1",
+    "manifest_version": 3,
+    "description": "Enhance your manaba+R experience.",
+    "content_scripts": [{
+        "matches": ["https://ct.ritsumei.ac.jp/ct/home", "https://ct.ritsumei.ac.jp/ct/home_course"],
+        "run_at": "document_idle",
+        "js": [
+            "js/loader.js"
+        ]
+    }],
+    "web_accessible_resources": [
+        {
+            "matches": ["<all_urls>"],
+            "resources": [
+                "./js/unuseroom.js",
+                "./js/rightmenue.js"
+            ]
+        }
+    ],
+    "permissions": []
+    // "permissions": ["activeTab", "contextMenus", "tabs"]
+}
