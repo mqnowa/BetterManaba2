@@ -2,8 +2,12 @@
 // var a = "";
 // console.log([...document.querySelectorAll("#DataTables_Table_0 tr > td:nth-child(3)")].map(td => td.textContent).join("\n"));
 // console.log(a);
-
-const isChromeExtention = (!chrome === undefined && !chrome.runtime === undefined);
+var isChromeExtention;
+try {
+    isChromeExtention = (!chrome === undefined && !chrome.runtime === undefined);
+} catch {
+    isChromeExtention = false;
+}
 const HOST = "https://4vent.github.io/"
 const PROJECT = "BetterManaba2/"
 
