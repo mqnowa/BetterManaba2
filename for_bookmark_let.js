@@ -1,0 +1,1 @@
+javascript:(function(){var%20url='https%3A%2F%2F4vent.github.io%2FBetterManaba2%2Fjs%2Funuseroom.js';var%20d=document;var%20e=d.createElement('script');e.src=url;d.getElementsByTagName('head')[0].appendChild(e);})();

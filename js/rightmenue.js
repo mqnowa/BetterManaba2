@@ -18,7 +18,7 @@ export function add_rightmenu_block(body_id, headerText, ...contents) {
         className:  "my-infolist-body"
     });
     const content = Object.assign(document.createElement("div"), {
-        style: "padding: 10px; text-align: right;",
+        style: "padding: 10px; text-align: right; display: flex; gap: 0.2em; flex-direction: column;",
         id: body_id
     });
 

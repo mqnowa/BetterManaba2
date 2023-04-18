@@ -3,6 +3,11 @@
 // console.log([...document.querySelectorAll("#DataTables_Table_0 tr > td:nth-child(3)")].map(td => td.textContent).join("\n"));
 // console.log(a);
 
+const isChromeExtention = (!chrome.runtime === undefined);
+const HOST = "https://4vent.github.io/"
+const PROJECT = "BetterManaba2/"
+
+
 const roomPrefix = {
     ad: {
         1: "アドセミナリオ",
@@ -89,10 +94,10 @@ class Unuseroom {
 
     async main() {
         var rightmenue_url;
-        if (chrome.runtime) {
-            rightmenue_url = "./rightmenue.js";
-        } else {
+        if (isChromeExtention) {
             rightmenue_url = chrome.runtime.getURL("js/rightmenue.js");
+        } else {
+            rightmenue_url = HOST + PROJECT + "js/rightmenue.js";
         }
         this.rightmenue_js = await import(rightmenue_url);
 
@@ -146,7 +151,8 @@ class Unuseroom {
         };
         const button = Object.assign(document.createElement("input"), {
             type: "button",
-            value: "探す"
+            value: "探す",
+            style: "margin: 0;"
         })
         this.rightmenue_js.add_rightmenu_block("search-rooms-box", "空き教室検索",
             makeinput((ev) => { 
@@ -203,9 +209,18 @@ class Unuseroom {
             } else {
                 search_rooms_result.textContent = "空き教室は " + res.usableRooms.toString() + " です。";
             }
-            setTimeout(() => {
-                button.disabled = false;
-            }, 5000);
+
+            var i = 5;
+            const interval = setInterval(() => {
+                if (i == 0) {
+                    button.disabled = false;
+                    button.value = "検索";
+                    clearInterval(interval);
+                } else {
+                    button.value = i.toString();
+                    i -= 1;
+                }
+            }, 1000);
         });
     }
 }
@@ -341,9 +356,17 @@ function hw2fw(str) {
     });
 }
 
-document.addEventListener("DOMContentLoaded", ev => {
+const main = () => {
     const text = document.querySelectorAll("head > script")[1].textContent;
     const xhr_csrf_token = text.match(/(?<=manaba\.xhr_csrf_token = ")[^"]+/)[0];
     console.log(xhr_csrf_token);
     new Unuseroom(xhr_csrf_token).main();
-})
+}
+
+if (isChromeExtention) {
+    document.addEventListener("DOMContentLoaded", ev => {
+        main();
+    });
+} else {
+    main();
+}

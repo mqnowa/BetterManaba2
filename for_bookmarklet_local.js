@@ -1,0 +1,1 @@
+javascript:(function(){var%20url='http%3A%2F%2F127.0.0.1%3A5500%2Fjs%2Funuseroom.js';var%20d=document;var%20e=d.createElement('script');e.src=url;d.getElementsByTagName('head')[0].appendChild(e);})();
