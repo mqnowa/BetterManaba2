@@ -1,11 +1,11 @@
-// import { add_rightmenu_block } from "./rightmenue"
-
 // ===== GET CLASROOMS in https://www.ritsumei.ac.jp/rainbow/avlist-class-bkc/ =====
 // var a = "";
 // console.log([...document.querySelectorAll("#DataTables_Table_0 tr > td:nth-child(3)")].map(td => td.textContent).join("\n"));
 // console.log(a);
+
 const roomPrefix = {
     ad: {
+        1: "アドセミナリオ",
         2: "アドセミナリオ",
         3: "アドセミナリオ",
         4: "アドセミナリオ",
@@ -42,6 +42,7 @@ const roomPrefix = {
 
 const availableRooms = {
     "アドセミナリオ": {
+        1: [],
         2: [201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214],
         3: [301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314],
         4: [401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414],
@@ -81,22 +82,138 @@ const availableRooms = {
 const WD = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const SM = {"": "すべて", 0: "通年", 1: "春学期", 2: "秋楽器", 3: "夏集中", 4: "冬集中"};
 
-async function main() {
-    const res = await getUsableRooms("fr", 3, null, null, null, 2);
-    console.log(
-        res.year + "年 " +
-        SM[res.semester] + " " +
-        res.weekday + "曜日 " +
-        res.period + "時限目 " +
-        res.campusBuilding + " " +
-        res.level + "階の空き教室は " +
-        res.usableRooms +  " です。"
-    );
-    // add_rightmenu_block();
+class Unuseroom {
+    constructor(manaba_xhr_csrf_token) {
+        this.manaba_xhr_csrf_token = manaba_xhr_csrf_token;
+    }
+
+    async main() {
+        var rightmenue_url;
+        if (chrome.runtime) {
+            rightmenue_url = "./rightmenue.js";
+        } else {
+            rightmenue_url = chrome.runtime.getURL("js/rightmenue.js");
+        }
+        this.rightmenue_js = await import(rightmenue_url);
+
+        const options = {
+            campusBuilding: "ad",
+            level: 1,
+            year: undefined,
+            semester: undefined,
+            weekday: undefined,
+            period: undefined
+        }
+        const makeline = (func, title, ...options) => {
+            const flexbox = Object.assign(document.createElement("div"), {
+                style: "width: 100%; display: flex;"
+            });
+            flexbox.appendChild(Object.assign(document.createElement("div"), {
+                textContent: title
+            }));
+            const select = Object.assign(document.createElement("select"), {
+                style: "flex-grow: 1;"
+            });
+            flexbox.appendChild(select);
+            options.forEach(op => {
+                select.appendChild(Object.assign(document.createElement("option"), {
+                    textContent: op[0],
+                    value: op[1]
+                }))
+            });
+            select.addEventListener("change", ev => {
+                func(ev);
+            });
+            return flexbox;
+        };
+        const makeinput = (func, title, def) => {
+            const flexbox = Object.assign(document.createElement("div"), {
+                style: "width: 100%; display: flex;"
+            });
+            flexbox.appendChild(Object.assign(document.createElement("div"), {
+                textContent: title
+            }));
+            const input = Object.assign(document.createElement("input"), {
+                type: "text",
+                style: "flex-grow: 1;",
+                value: def
+            });
+            flexbox.appendChild(input);
+            input.addEventListener("change", ev => {
+                func(ev);
+            });
+            return flexbox;
+        };
+        const button = Object.assign(document.createElement("input"), {
+            type: "button",
+            value: "探す"
+        })
+        this.rightmenue_js.add_rightmenu_block("search-rooms-box", "空き教室検索",
+            makeinput((ev) => { 
+                if (ev.target.value == "") options.year = undefined;
+                else options.year = ev.target.value;
+            }, "年度：", new Date().getFullYear().toString()),
+            makeline((ev) => { 
+                if (ev.target.value == "null") options.semester = undefined;
+                else options.semester = Math.floor(Number(ev.target.value));
+            }, "学期：", ["今", "null"], ["春学期", "1"], ["秋学期", "2"]),
+            makeline((ev) => { 
+                if (ev.target.value == "null") options.weekday = undefined;
+                else options.weekday = ev.target.value;
+            }, "曜日：", ["今", "null"], ["月", "Mon"], ["火", "Tue"], ["水", "Wed"], ["木", "Thu"], ["金", "Fri"]),
+            makeline((ev) => { 
+                if (ev.target.value == "null") options.period = undefined;
+                else options.period = Math.floor(Number(ev.target.value));
+            }, "時限：", ["今", "null"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"]),
+            makeline((ev) => { 
+                if (ev.target.value == "null") options.campusBuilding = undefined;
+                else options.campusBuilding = ev.target.value;
+            }, "場所：", ["アドセミナリオ", "ad"], ["コラーニングⅠ・Ⅱ", "co"], ["クリエーションコア", "cc"], ["プリズムハウス", "pr"], ["フォレストハウス", "fr"], ["ラルカディア", "ra"]),
+            makeinput((ev) => { 
+                if (ev.target.value == "null") options.level = undefined;
+                else options.level = Math.floor(Number(ev.target.value));
+            }, "　階：", "1"),
+            button
+        );
+        button.addEventListener("click", async ev => {
+            const search_rooms_box = document.querySelector("#search-rooms-box");
+            var search_rooms_result = search_rooms_box.querySelector("#search-rooms-result");
+            if (search_rooms_box.querySelector("#search-rooms-result")) {
+                search_rooms_result.textContent = "お待ちください…"
+            } else {
+                search_rooms_result = Object.assign(document.createElement("div"), {
+                    id: "search-rooms-result",
+                    textContent: "お待ちください…"
+                })
+                search_rooms_box.appendChild(search_rooms_result);
+            }
+            button.disabled = true;
+            const res = await getUsableRooms(
+                this.manaba_xhr_csrf_token,
+                options.campusBuilding,
+                options.level, 
+                options.year, 
+                options.semester, 
+                options.weekday, 
+                options.period
+            );
+            
+            if (res.usableRooms.length == 0) {
+                search_rooms_result.textContent = "空き教室はありません。";
+            } else {
+                search_rooms_result.textContent = "空き教室は " + res.usableRooms.toString() + " です。";
+            }
+            setTimeout(() => {
+                button.disabled = false;
+            }, 5000);
+        });
+    }
 }
+
 
 /**
  * 
+ * @param {*} manaba_xhr_csrf_token
  * @param {String} campusBuilding ad, co, cc, pr, fr, ra
  * @param {Number} level 階
  * @param {Number} year 年
@@ -104,7 +221,7 @@ async function main() {
  * @param {String} weekday 曜日 Mon Tue Wed Thu Fri Sat Sun
  * @param {Number} period 時限 1 2 3 4 5 6 7 8 9
  */
-async function getUsableRooms(campusBuilding, level, year, semester, weekday, period) {
+async function getUsableRooms(manaba_xhr_csrf_token, campusBuilding, level, year, semester, weekday, period) {
     const date = new Date();
     date.setTime(date.getTime() + 1000*60*60*9);
     if (!year) year = date.getUTCFullYear();
@@ -130,7 +247,7 @@ async function getUsableRooms(campusBuilding, level, year, semester, weekday, pe
         year: year,
         termgroup: semester,
         "manaba-form": "1",
-        SessionValue1: manaba.xhr_csrf_token,
+        SessionValue1: manaba_xhr_csrf_token,
         SessionValue: "@1",
     };
     payload["period[" + weekday + "][" + period.toString() + "]"] = "✓";
@@ -224,4 +341,9 @@ function hw2fw(str) {
     });
 }
 
-main();
+document.addEventListener("DOMContentLoaded", ev => {
+    const text = document.querySelectorAll("head > script")[1].textContent;
+    const xhr_csrf_token = text.match(/(?<=manaba\.xhr_csrf_token = ")[^"]+/)[0];
+    console.log(xhr_csrf_token);
+    new Unuseroom(xhr_csrf_token).main();
+})
