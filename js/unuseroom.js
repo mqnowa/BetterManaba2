@@ -3,7 +3,7 @@
 // console.log([...document.querySelectorAll("#DataTables_Table_0 tr > td:nth-child(3)")].map(td => td.textContent).join("\n"));
 // console.log(a);
 
-const isChromeExtention = (!chrome.runtime === undefined);
+const isChromeExtention = (!chrome === undefined && !chrome.runtime === undefined);
 const HOST = "https://4vent.github.io/"
 const PROJECT = "BetterManaba2/"
 
