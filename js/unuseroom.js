@@ -165,7 +165,8 @@ class Unuseroom {
                 options.year, 
                 options.semester, 
                 options.weekday, 
-                options.period
+                options.period,
+                search_rooms_result
             );
             
             if (res.usableRooms.length == 0) {
@@ -200,7 +201,7 @@ class Unuseroom {
  * @param {String} weekday 曜日 Mon Tue Wed Thu Fri Sat Sun
  * @param {Number} period 時限 1 2 3 4 5 6 7 8 9
  */
-async function getUsableRooms(manaba_xhr_csrf_token, campusBuilding, level, year, semester, weekday, period) {
+async function getUsableRooms(manaba_xhr_csrf_token, campusBuilding, level, year, semester, weekday, period, message_element) {
     const date = new Date();
     date.setTime(date.getTime() + 1000*60*60*9);
 
@@ -268,6 +269,7 @@ async function getUsableRooms(manaba_xhr_csrf_token, campusBuilding, level, year
     const classes = doc.querySelectorAll("#syllabussearchform .stdlist tr:not(.title)");
     const usedRooms = [];
     for (var i = 0; i < classes.length; i++) {
+        if (typeof(message_element) != "undefined") message_element.textContent = "お待ちください...(" + (i+1).toString() + "/" + classes.length.toString() + ")";
         const id = classes[i].getAttribute("onclick").match(/'href':'(syllabus_[0-9]+)'/)[1];
         const htmlText = await (await fetch("https://ct.ritsumei.ac.jp/ct/" + id)).text();
         const doc = new DOMParser().parseFromString(htmlText, "text/html");
