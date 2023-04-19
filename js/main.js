@@ -10,7 +10,7 @@ function getURL(path) {
 
 async function main() {
     const unuseroom = await import(getURL("js/unuseroom.js"));
-    const openmap = await import(getURL("js/openmap.js"));
+    // const openmap = await import(getURL("js/openmap.js"));
     unuseroom.main();
     // openmap.main();
 }
