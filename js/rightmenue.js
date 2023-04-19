@@ -33,3 +33,45 @@ export function add_rightmenu_block(body_id, headerText, ...contents) {
 
     right_body.insertBefore(div, right_body.childNodes[0]);
 }
+
+export function makeline(func, title, ...options) {
+    const flexbox = Object.assign(document.createElement("div"), {
+        style: "width: 100%; display: flex;"
+    });
+    flexbox.appendChild(Object.assign(document.createElement("div"), {
+        textContent: title
+    }));
+    const select = Object.assign(document.createElement("select"), {
+        style: "flex-grow: 1;"
+    });
+    flexbox.appendChild(select);
+    options.forEach(op => {
+        select.appendChild(Object.assign(document.createElement("option"), {
+            textContent: op[0],
+            value: op[1]
+        }))
+    });
+    select.addEventListener("change", ev => {
+        func(ev);
+    });
+    return flexbox;
+};
+
+export function makeinput(func, title, def) {
+    const flexbox = Object.assign(document.createElement("div"), {
+        style: "width: 100%; display: flex;"
+    });
+    flexbox.appendChild(Object.assign(document.createElement("div"), {
+        textContent: title
+    }));
+    const input = Object.assign(document.createElement("input"), {
+        type: "text",
+        style: "flex-grow: 1;",
+        placeholder: def
+    });
+    flexbox.appendChild(input);
+    input.addEventListener("change", ev => {
+        func(ev);
+    });
+    return flexbox;
+};

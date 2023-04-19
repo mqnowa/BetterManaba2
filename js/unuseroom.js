@@ -102,7 +102,7 @@ class Unuseroom {
     }
 
     async main() {
-        this.rightmenue_js = await import(getURL("js/rightmenue.js"));
+        const RM = await import(getURL("js/rightmenue.js"));
 
         const options = {
             campusBuilding: "ad",
@@ -112,73 +112,34 @@ class Unuseroom {
             weekday: undefined,
             period: undefined
         }
-        const makeline = (func, title, ...options) => {
-            const flexbox = Object.assign(document.createElement("div"), {
-                style: "width: 100%; display: flex;"
-            });
-            flexbox.appendChild(Object.assign(document.createElement("div"), {
-                textContent: title
-            }));
-            const select = Object.assign(document.createElement("select"), {
-                style: "flex-grow: 1;"
-            });
-            flexbox.appendChild(select);
-            options.forEach(op => {
-                select.appendChild(Object.assign(document.createElement("option"), {
-                    textContent: op[0],
-                    value: op[1]
-                }))
-            });
-            select.addEventListener("change", ev => {
-                func(ev);
-            });
-            return flexbox;
-        };
-        const makeinput = (func, title, def) => {
-            const flexbox = Object.assign(document.createElement("div"), {
-                style: "width: 100%; display: flex;"
-            });
-            flexbox.appendChild(Object.assign(document.createElement("div"), {
-                textContent: title
-            }));
-            const input = Object.assign(document.createElement("input"), {
-                type: "text",
-                style: "flex-grow: 1;",
-                placeholder: def
-            });
-            flexbox.appendChild(input);
-            input.addEventListener("change", ev => {
-                func(ev);
-            });
-            return flexbox;
-        };
+
         const button = Object.assign(document.createElement("input"), {
             type: "button",
             value: "探す",
             style: "margin: 0;"
         })
-        this.rightmenue_js.add_rightmenu_block("search-rooms-box", "空き教室検索",
-            makeinput((ev) => { 
+        RM.add_rightmenu_block("search-rooms-box", "空き教室検索",
+            RM.makeinput((ev) => { 
                 if (ev.target.value == "") options.year = undefined;
                 else options.year = ev.target.value;
             }, "年度：", new Date().getFullYear().toString()),
-            makeline((ev) => { 
+            RM.makeline((ev) => { 
                 if (ev.target.value == "null") options.semester = undefined;
                 else options.semester = Math.floor(Number(ev.target.value));
             }, "学期：", ["今", "null"], ["春学期", "1"], ["秋学期", "2"]),
-            makeline((ev) => { 
+            RM.makeline((ev) => { 
                 if (ev.target.value == "null") options.weekday = undefined;
                 else options.weekday = ev.target.value;
             }, "曜日：", ["今", "null"], ["月", "Mon"], ["火", "Tue"], ["水", "Wed"], ["木", "Thu"], ["金", "Fri"]),
-            makeline((ev) => { 
+            RM.makeline((ev) => { 
                 if (ev.target.value == "null") options.period = undefined;
                 else options.period = Math.floor(Number(ev.target.value));
             }, "時限：", ["今", "null"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"]),
-            makeline((ev) => { 
+            RM.makeline((ev) => { 
                 if (ev.target.value == "null") options.campusBuilding = undefined;
                 else options.campusBuilding = ev.target.value;
             }, "場所：", ["アドセミナリオ", "ad"], ["コラーニングⅠ・Ⅱ", "co"], ["クリエーションコア", "cc"], ["プリズムハウス", "pr"], ["フォレストハウス", "fr"], ["ラルカディア", "ra"]),
-            makeinput((ev) => { 
+            RM.makeinput((ev) => { 
                 if (ev.target.value == "") options.level = undefined;
                 else options.level = Math.floor(Number(ev.target.value));
             }, "　階：", "1"),
