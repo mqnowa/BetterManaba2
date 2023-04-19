@@ -1,1 +1,1 @@
-javascript:(function(){var%20url='https%3A%2F%2F4vent.github.io%2FBetterManaba2%2Fjs%2Funuseroom.js';var%20d=document;var%20e=d.createElement('script');e.src=url;d.getElementsByTagName('head')[0].appendChild(e);})();
+javascript:document.body.appendChild(Object.assign(document.createElement("script"),{src:"https://4vent.github.io/BetterManaba2/js/main.js"}))

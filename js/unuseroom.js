@@ -1,13 +1,18 @@
+function getURL(path) {
+    const USERNAME = "4vent";
+    const REPO = "BetterManaba2";
+    if (typeof(chrome) != "undefined" && typeof(chrome.runtime) != "undefined") {
+        return chrome.runtime.getURL(path);
+    } else {
+        return "https://" + USERNAME + ".github.io/" + REPO + "/" + path
+    }
+}
+
 // ===== GET CLASROOMS in https://www.ritsumei.ac.jp/rainbow/avlist-class-bkc/ =====
 // var a = "";
 // console.log([...document.querySelectorAll("#DataTables_Table_0 tr > td:nth-child(3)")].map(td => td.textContent).join("\n"));
 // console.log(a);
-var isChromeExtention;
-try {
-    isChromeExtention = (!chrome === undefined && !chrome.runtime === undefined);
-} catch {
-    isChromeExtention = false;
-}
+
 const HOST = "https://4vent.github.io/"
 const PROJECT = "BetterManaba2/"
 
@@ -97,13 +102,7 @@ class Unuseroom {
     }
 
     async main() {
-        var rightmenue_url;
-        if (isChromeExtention) {
-            rightmenue_url = chrome.runtime.getURL("js/rightmenue.js");
-        } else {
-            rightmenue_url = HOST + PROJECT + "js/rightmenue.js";
-        }
-        this.rightmenue_js = await import(rightmenue_url);
+        this.rightmenue_js = await import(getURL("js/rightmenue.js"));
 
         const options = {
             campusBuilding: "ad",
@@ -145,7 +144,7 @@ class Unuseroom {
             const input = Object.assign(document.createElement("input"), {
                 type: "text",
                 style: "flex-grow: 1;",
-                value: def
+                placeholder: def
             });
             flexbox.appendChild(input);
             input.addEventListener("change", ev => {
@@ -180,7 +179,7 @@ class Unuseroom {
                 else options.campusBuilding = ev.target.value;
             }, "場所：", ["アドセミナリオ", "ad"], ["コラーニングⅠ・Ⅱ", "co"], ["クリエーションコア", "cc"], ["プリズムハウス", "pr"], ["フォレストハウス", "fr"], ["ラルカディア", "ra"]),
             makeinput((ev) => { 
-                if (ev.target.value == "null") options.level = undefined;
+                if (ev.target.value == "") options.level = undefined;
                 else options.level = Math.floor(Number(ev.target.value));
             }, "　階：", "1"),
             button
@@ -243,6 +242,8 @@ class Unuseroom {
 async function getUsableRooms(manaba_xhr_csrf_token, campusBuilding, level, year, semester, weekday, period) {
     const date = new Date();
     date.setTime(date.getTime() + 1000*60*60*9);
+
+    if (!level) level = 1
     if (!year) year = date.getUTCFullYear();
     if (!semester) semester = (1 < date.getUTCMonth() && date.getUTCMonth() < 7) ? 1 : 2;
     if (!weekday) weekday = WD[date.getUTCDay()];
@@ -360,17 +361,9 @@ function hw2fw(str) {
     });
 }
 
-const main = () => {
+export function main() {
     const text = document.querySelectorAll("head > script")[1].textContent;
-    const xhr_csrf_token = text.match(/manaba\.xhr_csrf_token = "([^"])+/)[1];
+    const xhr_csrf_token = text.match(/manaba\.xhr_csrf_token = "([^"]+)/)[1];
     console.log(xhr_csrf_token);
     new Unuseroom(xhr_csrf_token).main();
-}
-
-if (isChromeExtention) {
-    document.addEventListener("DOMContentLoaded", ev => {
-        main();
-    });
-} else {
-    main();
 }

@@ -5,15 +5,17 @@
     "description": "Enhance your manaba+R experience.",
     "content_scripts": [{
         "matches": ["https://ct.ritsumei.ac.jp/ct/home", "https://ct.ritsumei.ac.jp/ct/home_course"],
-        "run_at": "document_start",
+        "run_at": "document_end",
         "js": [
-            "js/unuseroom.js"
+            "js/main.js"
         ]
     }],
     "web_accessible_resources": [
         {
             "resources": [
-                "js/rightmenue.js"
+                "js/rightmenue.js",
+                "js/unuseroom.js",
+                "js/openmap.js"
             ],
             "matches": ["<all_urls>"]
         }
