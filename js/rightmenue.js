@@ -34,7 +34,7 @@ export function add_rightmenu_block(body_id, headerText, ...contents) {
     right_body.insertBefore(div, right_body.childNodes[0]);
 }
 
-export function makeline(func, title, ...options) {
+export function makedropdown(func, title, ...options) {
     const flexbox = Object.assign(document.createElement("div"), {
         style: "width: 100%; display: flex;"
     });

@@ -123,19 +123,19 @@ class Unuseroom {
                 if (ev.target.value == "") options.year = undefined;
                 else options.year = ev.target.value;
             }, "年度：", new Date().getFullYear().toString()),
-            RM.makeline((ev) => { 
+            RM.makedropdown((ev) => { 
                 if (ev.target.value == "null") options.semester = undefined;
                 else options.semester = Math.floor(Number(ev.target.value));
             }, "学期：", ["今", "null"], ["春学期", "1"], ["秋学期", "2"]),
-            RM.makeline((ev) => { 
+            RM.makedropdown((ev) => { 
                 if (ev.target.value == "null") options.weekday = undefined;
                 else options.weekday = ev.target.value;
             }, "曜日：", ["今", "null"], ["月", "Mon"], ["火", "Tue"], ["水", "Wed"], ["木", "Thu"], ["金", "Fri"]),
-            RM.makeline((ev) => { 
+            RM.makedropdown((ev) => { 
                 if (ev.target.value == "null") options.period = undefined;
                 else options.period = Math.floor(Number(ev.target.value));
             }, "時限：", ["今", "null"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"]),
-            RM.makeline((ev) => { 
+            RM.makedropdown((ev) => { 
                 if (ev.target.value == "null") options.campusBuilding = undefined;
                 else options.campusBuilding = ev.target.value;
             }, "場所：", ["アドセミナリオ", "ad"], ["コラーニングⅠ・Ⅱ", "co"], ["クリエーションコア", "cc"], ["プリズムハウス", "pr"], ["フォレストハウス", "fr"], ["ラルカディア", "ra"]),
