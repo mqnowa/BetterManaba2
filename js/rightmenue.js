@@ -1,8 +1,11 @@
 /**
  * 
- * @param {[HTMLElement]} contents 
+ * @param {string} body_id 
+ * @param {string} headerText 
+ * @param {string} text_align 
+ * @param {HTMLElement} contents 
  */
-export function add_rightmenu_block(body_id, headerText, ...contents) {
+export function add_rightmenu_block(body_id, headerText, text_align, contents) {
     const right_body = document.querySelector(".contentbody-right");
 
     const div = Object.assign(document.createElement("div"), {
@@ -18,7 +21,7 @@ export function add_rightmenu_block(body_id, headerText, ...contents) {
         className:  "my-infolist-body"
     });
     const content = Object.assign(document.createElement("div"), {
-        style: "padding: 10px; text-align: right; display: flex; gap: 0.2em; flex-direction: column;",
+        style: `padding: 10px; text-align: ${text_align}; display: flex; gap: 0.2em; flex-direction: column;`,
         id: body_id
     });
 
@@ -34,7 +37,14 @@ export function add_rightmenu_block(body_id, headerText, ...contents) {
     right_body.insertBefore(div, right_body.childNodes[0]);
 }
 
-export function makedropdown(func, title, ...options) {
+/**
+ * 
+ * @param {function} func 
+ * @param {string} title 
+ * @param {[HTMLOptionElement]} options 
+ * @returns 
+ */
+export function makedropdown(func, title, options, _id) {
     const flexbox = Object.assign(document.createElement("div"), {
         style: "width: 100%; display: flex;"
     });
@@ -42,22 +52,36 @@ export function makedropdown(func, title, ...options) {
         textContent: title
     }));
     const select = Object.assign(document.createElement("select"), {
-        style: "flex-grow: 1;"
+        style: "width: 1px; flex-grow: 1;"
     });
     flexbox.appendChild(select);
     options.forEach(op => {
-        select.appendChild(Object.assign(document.createElement("option"), {
+        const option = Object.assign(document.createElement("option"), {
             textContent: op[0],
             value: op[1]
-        }))
+        });
+        if (op.length == 3) {
+            Object.keys(op[2]).forEach(k => option.setAttribute(k, (op[2][k] === true) ? "" : op[2][k]));
+        }
+        select.appendChild(option);
     });
     select.addEventListener("change", ev => {
         func(ev);
     });
+    if (typeof(_id) != "undefined") {
+        select.id = _id;
+    }
     return flexbox;
 };
 
-export function makeinput(func, title, def) {
+/**
+ * 
+ * @param {function} func 
+ * @param {string} title 
+ * @param {string} placeholder 
+ * @returns 
+ */
+export function makeinput(func, title, placeholder, _id) {
     const flexbox = Object.assign(document.createElement("div"), {
         style: "width: 100%; display: flex;"
     });
@@ -67,11 +91,14 @@ export function makeinput(func, title, def) {
     const input = Object.assign(document.createElement("input"), {
         type: "text",
         style: "flex-grow: 1;",
-        placeholder: def
+        placeholder: placeholder
     });
     flexbox.appendChild(input);
     input.addEventListener("change", ev => {
         func(ev);
     });
+    if (typeof(_id) != "undefined") {
+        input.id = _id;
+    }
     return flexbox;
 };
