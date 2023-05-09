@@ -10,8 +10,10 @@ function getURL(path) {
 
 async function main() {
     const unuseroom = await import(getURL("js/unuseroom.js"));
+    const deadline = await import(getURL("js/deadline.js"));
     const openmap = await import(getURL("js/openmap.js"));
     unuseroom.main();
+    deadline.main();
     openmap.main();
 }
 

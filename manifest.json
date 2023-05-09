@@ -15,6 +15,7 @@
             "resources": [
                 "js/rightmenue.js",
                 "js/unuseroom.js",
+                "js/deadline.js",
                 "js/openmap.js"
             ],
             "matches": ["<all_urls>"]

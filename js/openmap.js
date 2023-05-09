@@ -62,7 +62,7 @@ export async function main() {
         var pos = undefined;
         var code = undefined;
         if (match) code = match[1];
-        if (code.toLowerCase() == "c" && Number(match[2]) >= 500) {
+        if (match && code.toLowerCase() == "c" && Number(match[2]) >= 500) {
             code = "c2";
         }
         if (match && Object.keys(buildings).includes(code.toLowerCase())) {
