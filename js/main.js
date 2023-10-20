@@ -1,5 +1,5 @@
 function getURL(path) {
-    const USERNAME = "4vent";
+    const USERNAME = "mqnowa";
     const REPO = "BetterManaba2";
     if (typeof(chrome) != "undefined" && typeof(chrome.runtime) != "undefined") {
         return chrome.runtime.getURL(path);

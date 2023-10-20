@@ -1,5 +1,5 @@
 function getURL(path) {
-    const USERNAME = "4vent";
+    const USERNAME = "mqnowa";
     const REPO = "BetterManaba2";
     if (typeof(chrome) != "undefined" && typeof(chrome.runtime) != "undefined") {
         return chrome.runtime.getURL(path);
@@ -13,7 +13,7 @@ function getURL(path) {
 // console.log([...document.querySelectorAll("#DataTables_Table_0 tr > td:nth-child(3)")].map(td => td.textContent).join("\n"));
 // console.log(a);
 
-const HOST = "https://4vent.github.io/"
+const HOST = "https://mqnowa.github.io/"
 const PROJECT = "BetterManaba2/"
 
 
