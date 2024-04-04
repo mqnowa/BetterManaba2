@@ -325,7 +325,7 @@ function hw2fw(str) {
 }
 
 export function main() {
-    const text = document.querySelectorAll("head > script")[1].textContent;
+    const text = document.querySelectorAll("head > script")[3].textContent;
     const xhr_csrf_token = text.match(/manaba\.xhr_csrf_token = "([^"]+)/)[1];
     console.log(xhr_csrf_token);
     new Unuseroom(xhr_csrf_token).main();
