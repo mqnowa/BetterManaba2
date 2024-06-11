@@ -1,4 +1,4 @@
-function main() {
+export function main() {
     const querystatus = document.querySelector(".querystatus").cloneNode(true);
     querystatus.style.padding = "4px 4px 4px 4px"
     const table = document.createElement("table");
@@ -25,8 +25,8 @@ function main() {
     observer.observe(querySpentSecClock,
                      {attributes: true, childList: true, subtree: true});
 }
-main();
+// main();
 
-document.addEventListener("DOMContentLoaded", () => {
-    main();
-});
+// document.addEventListener("DOMContentLoaded", () => {
+//     main();
+// });
